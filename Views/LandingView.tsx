@@ -1,11 +1,16 @@
 import React from 'react';
-import { View, Text, ImageBackground, StatusBar, Button, TouchableOpacity } from 'react-native';
+import { View, Text, ImageBackground, StatusBar, Button, TouchableOpacity, Dimensions } from 'react-native';
+import * as Haptics from 'expo-haptics';
 
 interface LandingViewProps {
     navigation: any; 
 }
 
 function LandingView({navigation}: LandingViewProps) {
+    const handleHapticFeedback = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    };
+
     return (
         <>
             <StatusBar hidden />
@@ -13,8 +18,8 @@ function LandingView({navigation}: LandingViewProps) {
                 source={{ uri: 'https://images.pexels.com/photos/7991182/pexels-photo-7991182.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2' }}
                 style={{ flex: 1 }}
             >
-                                <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', paddingTop: 90 }}>
-                    <Text style={{ color: 'white', fontSize: 35, fontWeight: 'bold', textAlign: 'center' ,  fontFamily:'System',}}>
+                <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', paddingTop: 90 }}>
+                    <Text style={{ color: 'white', fontSize: 35, fontWeight: 'bold', textAlign: 'center', fontFamily:'System' }}>
                         Theater App
                     </Text>
                     <Text style={{ 
@@ -35,18 +40,22 @@ function LandingView({navigation}: LandingViewProps) {
                         style={{
                             backgroundColor: '#2C2C2E',
                             paddingVertical: 20,
-                            paddingHorizontal: 40,
-                            width: 300,
+                            paddingHorizontal: 20,
+                            width: Dimensions.get('window').width > 400 ? '90%' : '95%',
+                            maxWidth: 500,
                             borderRadius: 15, 
                             shadowColor: '#000',
                             shadowOffset: { width: 0, height: 2 },
                             shadowOpacity: 0.3,
                             shadowRadius: 4,
                             elevation: 5
-                        }} activeOpacity={0.8}
-                        onPress={() => navigation.navigate('Login')}
-                        >
-                            
+                        }} 
+                        activeOpacity={0.7}
+                        onPress={() => {
+                            handleHapticFeedback();
+                            navigation.navigate('Login');
+                        }}
+                    >
                         <Text style={{
                             color: 'white',
                             fontFamily:'System',
