@@ -1,12 +1,21 @@
 import React from 'react';
 import { View, Text, ImageBackground, StatusBar, Button, TouchableOpacity, Dimensions } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-interface LandingViewProps {
-    navigation: any; 
-}
+type RootStackParamList = {
+    Landing: undefined;
+    Login: undefined;
+    Home: undefined;
+};
 
-function LandingView({navigation}: LandingViewProps) {
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Landing'>;
+
+
+function LandingView() {
+    const navigation = useNavigation<NavigationProp>();
+
     const handleHapticFeedback = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     };

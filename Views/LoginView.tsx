@@ -1,8 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, SafeAreaView, TextInput, TouchableOpacity, Animated, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import LoginFunction from '../Services/LoginEmployee';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+
+type RootStackParamList = {
+    Landing: undefined;
+    Login: undefined;
+    Home: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 function LoginView() {
+    const navigation = useNavigation<NavigationProp>();
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <SafeAreaView style={{ flex: 1, backgroundColor: '#1C1C1E' }}>
@@ -20,15 +34,46 @@ function LoginView() {
     );
 }
 
+
 const FormContainerView = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailFocused, setEmailFocused] = useState(false);
     const [passwordFocused, setPasswordFocused] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigation = useNavigation<NavigationProp>();
+
 
     const handleHapticFeedback = () => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     };
+
+    const Login = async () => {
+
+        try {
+            const loginResponse = await LoginFunction.LoginEmployee(email, password);
+            if (loginResponse.length > 0) {
+                console.log('Login Successful');
+                await AsyncStorage.setItem('employeeSession', JSON.stringify({
+                    employeeId: loginResponse[0].id,
+                    name: loginResponse[0].name,
+                    role: loginResponse[0].role,
+                    timestamp: new Date().toISOString()
+                }));
+                handleHapticFeedback();
+                // Navigate to HomeView
+
+                setErrorMessage('');
+            } else {
+                setErrorMessage('Invalid email or password');
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            }
+        } catch (error) {
+            setErrorMessage('An error occurred. Please try again.');
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            console.error(error);
+        }
+    }
 
     return (
         <View style={{
@@ -131,6 +176,23 @@ const FormContainerView = () => {
                 />
             </View>
 
+            {/* Error Message */}
+            {errorMessage ? (
+                <View style={{
+                    marginBottom: 20,
+                    paddingHorizontal: 5
+                }}>
+                    <Text style={{
+                        color: '#FF453A',
+                        fontSize: 14,
+                        textAlign: 'center',
+                        fontFamily: 'System'
+                    }}>
+                        {errorMessage}
+                    </Text>
+                </View>
+            ) : null}
+
             {/* Sign In Button */}
             <TouchableOpacity
                 style={{
@@ -143,6 +205,7 @@ const FormContainerView = () => {
                 activeOpacity={0.8}
                 onPress={() => {
                     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                    Login();
                     // Add login logic here
                 }}
             >
@@ -160,3 +223,7 @@ const FormContainerView = () => {
 }
 
 export default LoginView;
+
+function useToast() {
+    throw new Error('Function not implemented.');
+}
