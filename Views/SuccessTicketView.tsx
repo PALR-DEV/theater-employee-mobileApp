@@ -25,7 +25,7 @@ export default function SuccessTicketView() {
             const { sound } = await Audio.Sound.createAsync(
                 require('../assets/success-sound.mp3')
             );
-            await sound.setVolumeAsync(0.05)
+            await sound.setVolumeAsync(0.08)
             await sound.playAsync();
 
             // Play haptic pattern

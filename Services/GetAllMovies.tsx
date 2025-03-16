@@ -14,7 +14,6 @@ async function getAllMovies(){
         throw error;
         
     }
-
 }
 
 export {getAllMovies}
