@@ -34,50 +34,36 @@ export default function App({ onClose }) {
 
     const handleScan = ({ barcodes }: BarcodeScanningResult) => {
         try {
+            // Add debug logging
+            console.log('Scan attempt:', barcodes);
+            
             if (!isScanning || !barcodes || barcodes.length === 0) return;
 
             for (const barcode of barcodes) {
+                // Add more detailed logging
+                console.log('Detected barcode:', {
+                    type: barcode.type,
+                    data: barcode.data,
+                    bounds: barcode.bounds
+                });
+                
                 if (barcode.type === 'qr' && barcode.data) {
-                    // Calculate scan area bounds
-                    const centerX = windowWidth / 2;
-                    const centerY = windowHeight / 2;
-                    const scanLeft = centerX - scanSize / 2;
-                    const scanRight = centerX + scanSize / 2;
-                    const scanTop = centerY - scanSize / 2;
-                    const scanBottom = centerY + scanSize / 2;
-
-                    // Check if QR code is within bounds
-                    if (barcode.bounds && barcode.bounds.origin) {
-                        console.log('Processing barcode:', {
-                            type: barcode.type,
-                            data: barcode.data,
-                            bounds: barcode.bounds
-                        });
-                        const { x, y } = barcode.bounds.origin;
-                        if (x >= scanLeft && x <= scanRight && y >= scanTop && y <= scanBottom) {
-                            setIsScanning(false);
-                            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                            
-                            
-                            // Extract and validate ticket ID from QR code
-                            const ticketId = barcode.data.trim();
-                            if (ticketId) {
-                                console.log('Valid QR Code detected:', ticketId);
-                                Alert.alert(
-                                    'QR Code Detected',
-                                    `Ticket ID: ${ticketId}`,
-                                    [{ text: 'OK', onPress: () => validateTicket(ticketId) }]
-                                );
-                            } else {
-                                console.error('Invalid QR Code data');
-                                Alert.alert('Error', 'Invalid QR Code data');
-                            }
-
-                            // Reset scanning after processing
-                            setTimeout(() => setIsScanning(true), 1000);
-                            break;
-                        }
+                    // Remove bounds checking temporarily for testing
+                    setIsScanning(false);
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                    
+                    const ticketId = barcode.data.trim();
+                    if (ticketId) {
+                        console.log('Valid QR Code detected:', ticketId);
+                        Alert.alert(
+                            'QR Code Detected',
+                            `Ticket ID: ${ticketId}`,
+                            [{ text: 'OK', onPress: () => validateTicket(ticketId) }]
+                        );
                     }
+                    
+                    setTimeout(() => setIsScanning(true), 1000);
+                    break;
                 }
             }
         } catch (error) {
@@ -109,8 +95,6 @@ export default function App({ onClose }) {
                 facing="back"
                 barcodeScannerSettings={{
                     barcodeTypes: ['qr'],
-                    interval: 300,
-                    barcodeScannerEnabled: true
                 }}
                 onBarcodeScanned={handleScan}
                 enableTorch={false}

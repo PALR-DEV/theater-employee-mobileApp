@@ -14,7 +14,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.senpai-69.movie-theater-employee-app"
+      "bundleIdentifier": "com.senpai-69.movie-theater-employee-app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera for QR code scanning"
+      }
     },
     "android": {
       "adaptiveIcon": {

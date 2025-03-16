@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from 'react-native';
 import HomeView from './Views/HomeView';
 import { MovieScheduleView } from './Views/MovieSheduleView';
+import SuccessTicketView from './Views/SuccessTicketView';
 
 type RootStackParamList = {
   Landing: undefined;
@@ -117,6 +118,12 @@ export default function App() {
               name='MovieShedule'
               component={MovieScheduleView}
               options={{headerShown: false}}
+            />
+            <Stack.Screen 
+              name='successTicket'
+              component={SuccessTicketView}
+              initialParams={{ ticketId: undefined }}
+              options={{headerShown: false, gestureEnabled: false}}
             />
           </>
         )}

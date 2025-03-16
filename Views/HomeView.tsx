@@ -12,6 +12,7 @@ type RootStackParamList = {
     Login: undefined;
     Home: undefined;
     MovieShedule:undefined;
+    successTicket: { ticketId: string | undefined };
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -46,9 +47,8 @@ export default function HomeView() {
         console.log(`${action} pressed`);
         // Add action handling logic here
 
-        if( action === 'schedule' ) {
+        if (action === 'schedule') {
             navigation.navigate('MovieShedule');
-
         }
     };
 
@@ -133,6 +133,11 @@ export default function HomeView() {
                                 title="Theater Status"
                                 icon="film-outline"
                                 onPress={() => handleActionPress('status')}
+                            />
+                            <ActionCard 
+                                title="Test Success"
+                                icon="bug-outline"
+                                onPress={() => navigation.navigate('successTicket', { ticketId: 'test-123' })}
                             />
                         </View>
                     </View>
