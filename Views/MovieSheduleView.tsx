@@ -178,7 +178,10 @@ export const MovieScheduleView = () => {
                                                 styles.dateListItem,
                                                 selectedDate === date && styles.selectedDate
                                             ]}
-                                            onPress={() => setSelectedDate(date)}
+                                            onPress={() => {
+                                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                                setSelectedDate(date);
+                                            }}
                                         >
                                             <Text style={styles.dateText}>{formatDate(date)}</Text>
                                         </TouchableOpacity>
@@ -213,11 +216,11 @@ export const MovieScheduleView = () => {
                                                                 Haptics.notificationAsync(
                                                                     Haptics.NotificationFeedbackType.Success
                                                                 );
-                                                                navigation.navigate('Booking', {
-                                                                    movie: selectedMovie,
-                                                                    sala: screening.sala,
-                                                                    time: time
-                                                                });
+                                                                // navigation.navigate('Booking', {
+                                                                //     movie: selectedMovie,
+                                                                //     sala: screening.sala,
+                                                                //     time: time
+                                                                // });
                                                             }}
                                                         >
                                                             <Text style={styles.timeButtonText}>{time}</Text>
@@ -261,23 +264,19 @@ const MovieCard = ({ movie, onPress }: { movie: Movie; onPress: () => void }) =>
             onPress={onPress}
         >
             <Animated.View style={[styles.movieCard, { transform: [{ scale: pressAnim }] }]}>
-                <LazyLoadImage source={{ uri: movie.poster_url }} style={styles.poster} />
+                <Image source={{ uri: movie.poster_url }} style={styles.poster} />
                 <LinearGradient
                     colors={['rgba(44, 44, 46, 0.7)', 'rgba(44, 44, 46, 0.95)']}
                     style={styles.movieDetails}
                 >
                     <Text style={styles.title}>{movie.title}</Text>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={styles.categoriesContainer}
-                    >
+                    <View style={styles.categoriesContainer}>
                         {movie.categories?.map((category, index) => (
                             <View key={index} style={styles.categoryPill}>
                                 <Text style={styles.categoryText}>{category}</Text>
                             </View>
                         ))}
-                    </ScrollView>
+                    </View>
                     <Text style={styles.meta}>{movie.duration}</Text>
                 </LinearGradient>
             </Animated.View>
@@ -362,7 +361,8 @@ const styles = StyleSheet.create({
     meta: {
         color: '#9B9B9B',
         fontSize: 14,
-        marginBottom: 12,
+        marginBottom: 16,
+        marginTop: 8,
         letterSpacing: 0.25,
     },
     modalContainer: {
@@ -462,15 +462,19 @@ const styles = StyleSheet.create({
         borderRadius: 2,
     },
     categoriesContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
         marginVertical: 8,
-        flexGrow: 0
+        marginRight: -8,
+        marginBottom: -8
     },
     categoryPill: {
         backgroundColor: 'rgba(255, 255, 255, 0.15)',
         paddingHorizontal: 12,
         paddingVertical: 4,
         borderRadius: 16,
-        marginRight: 8
+        marginRight: 8,
+        marginBottom: 8
     },
     categoryText: {
         color: '#fff',
